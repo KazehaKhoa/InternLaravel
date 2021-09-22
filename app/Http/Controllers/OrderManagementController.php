@@ -11,11 +11,15 @@ use Illuminate\Support\Facades\Gate;
 class OrderManagementController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->authorize('view');
+    }
+
     public function index(\App\Models\User $user)
     {  
         
         $order = \App\Models\User::findOrFail($user->id)->orders;
-        $this->authorize('view', $user->order); 
         return view ('orderManagement', compact('order','user'));
     }
 }

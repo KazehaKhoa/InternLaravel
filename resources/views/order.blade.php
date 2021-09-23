@@ -20,11 +20,6 @@
             <td>{{  $product->amount }}</td>
         </tr>
     @endforeach
-    <tr class="table-success">
-        <th></th>
-        <th>Sales:</th>
-        <th></th>
-    </tr>
         <tr class="table-secondary">
             <td></td>
             <td>Sum:</td>
@@ -32,6 +27,7 @@
         </tr>
     
     </table>
+    <textarea class="mt-5 pt-5 form-control text-center font-weight-bold" id="orderNote" rows="3">{{  $order->description }}</textarea>
     
 </div>
 @endsection

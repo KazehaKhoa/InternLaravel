@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserRequest;
 use Illuminate\Support\Facades\Crypt;
+use Redirect;
 
 
 class HomeController extends Controller
@@ -27,6 +28,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        return Redirect::to('orderM/' .auth()->user()->id);
     }
 }

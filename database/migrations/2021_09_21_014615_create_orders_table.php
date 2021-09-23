@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->float('sum');
             $table->text('description')->nullable();
+            $table->date('order_date');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

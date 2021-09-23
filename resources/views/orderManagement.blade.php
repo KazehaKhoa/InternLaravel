@@ -8,6 +8,7 @@
             <th>OrderIndex</th>
             <th>Customer</th>
             <th>Sum ($USD)</th>
+            <th>Order Date</th>
         </tr>
         </thead>
     @foreach ($order as $order)
@@ -15,6 +16,7 @@
         <td>{{  $order->id }}</td>
         <td>{{  $order->user->name }}</td>
         <td>{{  $order->sum }}</td>
+        <td>{{  $order->order_date }}</td>
     </tr>
     @endforeach
     </table>

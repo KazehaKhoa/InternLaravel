@@ -28,6 +28,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return Redirect::to('orderM/' .auth()->user()->id);
+        
+        return Redirect::to('/admin/order/index');
     }
+
 }

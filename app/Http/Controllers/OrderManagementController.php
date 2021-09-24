@@ -8,20 +8,36 @@ use App\Http\Requests\User\UserRequest;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
 use Auth;
+use Redirect;
 
 class OrderManagementController extends Controller
 {
     public function index(\App\Models\User $user)
     {  
-        if(Auth::user() == $user) {
+        if(auth()->user() == $user || auth()->user()->isAdmin == 1) {
             // valid user
-            $user = Auth::user();
             $order = \App\Models\User::findOrFail($user->id)->orders;
             return view ('orderManagement', compact('order','user'));
        } else {
             //not allowed
-            abort(403);
+            return Redirect::to('orderM/' .auth()->user()->id);
        }
-       
+    }
+
+    public function indexAdmin()
+    {
+        $order = \App\Models\Order::all();
+        return view ('adminView', compact('order')); 
+    }
+
+    public function add()
+    {
+        $product = \App\Models\Product::all();
+        return view ('addOrderForm', compact('product'));
+    }
+
+    public function store()
+    {
+        dd(request()->all());
     }
 }

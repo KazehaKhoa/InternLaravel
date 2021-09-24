@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'test1',
                 'email' => 'test1@test.com',
+                'isAdmin' => 0,
                 'password' => bcrypt('123456'),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'test2',
                 'email' => 'test2@test.com',
+                'isAdmin' => 0,
                 'password' => bcrypt('123456'),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -35,6 +37,16 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'test3',
                 'email' => 'test3@test.com',
+                'isAdmin' => 0,
+                'password' => bcrypt('123456'),
+                'created_at' => now(),
+                'updated_at' => now(),
+                'email_verified_at' => now(),
+            ],
+            [
+                'name' => 'test4',
+                'email' => 'test4@test.com',
+                'isAdmin' => 1,
                 'password' => bcrypt('123456'),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -46,25 +58,25 @@ class DatabaseSeeder extends Seeder
             [
                 'user_id' => 1,
                 'sum' => 13000,
-                'description' => 'COD in HCM',
+                'state' => 'CANCELED',
                 'order_date' => now(),
             ],
             [
                 'user_id' => 1,
                 'sum' => 21000,
-                'description' => 'COD in HCM',
+                'state' => 'FINISHED',
                 'order_date' => now(),
             ],
             [
                 'user_id' => 2,
                 'sum' => 18000,
-                'description' => 'COD in Ha Noi',
+                'state' => 'FINISHED',
                 'order_date' => now(),
             ],
             [
                 'user_id' => 3,
                 'sum' => 15000,
-                'description' => 'Paid, Ship LA',
+                'state' => 'SHIPPING',
                 'order_date' => now(),
             ],
         ]);

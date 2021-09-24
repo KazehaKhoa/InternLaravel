@@ -17,11 +17,11 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->float('sum');
-            $table->text('description')->nullable();
+            $table->text('state')->nullable();
             $table->date('order_date');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete ('cascade');
         });
     }
 

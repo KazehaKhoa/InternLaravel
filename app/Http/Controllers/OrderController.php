@@ -19,9 +19,9 @@ class OrderController extends Controller
 
     public function index(\App\Models\Order $order)
     {
-        if(Auth::user() == $order->user) {
+        if(auth()->user() == $order->user || auth()->user()->isAdmin == 1) {
             // valid user
-            $user = Auth::user();
+            $user = $order->user;
             $orderId = $order->id;
             $product = DB::table('order__products')->join('orders', 'order_id', '=' , 'orders.id')->join('products', 'product_id', '=' , 'products.id')->select('*')->where('orders.id', '=', $orderId)->get();
             return view ('order', compact('order', 'orderId', 'product', 'user'));

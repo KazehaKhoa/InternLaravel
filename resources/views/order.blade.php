@@ -27,7 +27,7 @@
         </tr>
     
     </table>
-    <textarea class="mt-5 pt-5 form-control text-center font-weight-bold" id="orderNote" rows="3">{{  $order->description }}</textarea>
+    <textarea class="mt-5 pt-5 form-control text-center font-weight-bold" id="orderNote" rows="3">{{  $order->state }}</textarea>
     
 </div>
 @endsection

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
 use Auth;
 use Redirect;
+use DB;
 
 class OrderManagementController extends Controller
 {
@@ -36,8 +37,57 @@ class OrderManagementController extends Controller
         return view ('addOrderForm', compact('product'));
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        dd(request()->all());
+        $data = request()->validate([
+            'userId' => 'required|exists:users,id',
+        ]);
+        
+        
+        $amount = $request->get('quantity');
+        $numOfProducts = DB::table('products')->count();
+        $newOrderId = 1 + DB::table('orders')->count();
+        $sum = 0;
+
+        for($i = 0; $i < $numOfProducts; $i++) {
+            if($amount[$i] == null) {
+                $amount[$i] = 0;
+            }
+            $product = DB::table('products')->select('*')->where('id', '=', $i + 1)->get();
+            $sum = $sum + $amount[$i] * $product[0]->price;
+        }
+        //add to order
+        \App\Models\Order::create([
+            'user_id' => $data['userId'],
+            'sum' => $sum,
+            'state' => $request->get('orderState'),
+            'order_date' => now(),
+        ]);
+
+        for($i = 0; $i < $numOfProducts; $i++) {
+            if($amount[$i] == null) {
+                $amount[$i] = 0;
+            }
+            $product = DB::table('products')->select('*')->where('id', '=', $i + 1)->get();
+
+            $newStock = $product[0]->stock - $amount[$i];
+            DB::table('products')
+              ->where('id', '=', $i + 1)
+              ->update(['stock' => $newStock]);
+            if ($newStock == 0) {
+                DB::table('products')
+              ->where('id', '=', $i + 1)
+              ->update(['state' => 'OUT OF STOCK']);
+            }
+
+            \App\Models\Order_Product::create([
+                'order_id' => $newOrderId,
+                'product_id' => $i + 1,
+                'amount' => $amount[$i]
+            ]);
+
+        }
+
+        return Redirect::to('admin/order/index');
     }
 }

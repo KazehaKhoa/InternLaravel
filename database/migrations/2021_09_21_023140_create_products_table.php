@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->float('price');
             $table->string('productId');
             $table->string('state');
+            $table->integer('stock');
             $table->timestamps();
         });
     }

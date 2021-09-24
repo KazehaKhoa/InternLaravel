@@ -87,12 +87,14 @@ class DatabaseSeeder extends Seeder
                 'price' => 5000,
                 'productId' => 'R18150',
                 'state' => 'AVAILABLE',
+                'stock' => 12
             ],
             [
                 'name' => 'KAWASAKI 1000',
                 'price' => 8000,
                 'productId' => 'K1000',
                 'state' => 'OUT OF STOCK',
+                'stock' => 0
             ],
         ]);
 

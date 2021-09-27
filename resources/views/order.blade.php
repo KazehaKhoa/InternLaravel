@@ -28,6 +28,14 @@
     
     </table>
     <textarea class="mt-5 pt-5 form-control text-center font-weight-bold" id="orderNote" rows="3">{{  $order->state }}</textarea>
+
+    <a class="btn" href="{{ route('admin.orders') }}">Home</a>
+    @if (auth()->user()->isAdmin == 1)
+        <a class="btn" href="/order/{{ $order->id }}/edit">Edit State</a><br>
+    @endif
+
     
+    
+
 </div>
 @endsection

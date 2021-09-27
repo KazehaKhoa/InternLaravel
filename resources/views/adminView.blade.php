@@ -18,7 +18,13 @@
         <td  onclick="window.location='/order/{{ $order->id }}'">{{  $order->user->name }}</td>
         <td  onclick="window.location='/order/{{ $order->id }}'">{{  $order->sum }}</td>
         <td  onclick="window.location='/order/{{ $order->id }}'">{{  $order->order_date }}</td>
-        <td><a class="btn" href="/order/1"><i class="fa fa-trash"></i></a></td>
+        <td>
+            <form method="POST" action="/order/{{$order->id}}/delete">
+                {{ csrf_field() }}
+                {{ method_field('DELETE') }}
+
+            <input type="submit" class="btn btn-danger delete-user" value="Delete user"></form>
+        </td>
     </tr>
     @endforeach
     </table>

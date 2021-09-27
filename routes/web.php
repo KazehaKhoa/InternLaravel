@@ -20,8 +20,17 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/admin/order/index', [App\Http\Controllers\OrderManagementController::class, 'indexAdmin'])->middleware('is_admin');
-Route::get('/admin/order/add', [App\Http\Controllers\OrderManagementController::class, 'add'])->middleware('is_admin');
-Route::post('/admin/order/', [App\Http\Controllers\OrderManagementController::class, 'store'])->middleware('is_admin');
+//show all order for admin
+Route::get('/admin/order', [App\Http\Controllers\OrderManagementController::class, 'showAdmin'])->name('admin.orders')->middleware('is_admin');
+//add order by admin
+Route::get('/admin/order/add', [App\Http\Controllers\OrderController::class, 'add'])->middleware('is_admin');
+Route::post('/admin/order', [App\Http\Controllers\OrderController::class, 'store'])->middleware('is_admin');
+//show all order of that user
 Route::get('/orderM/{user}', [App\Http\Controllers\OrderManagementController::class, 'index']);
+//show an order for admin or user of that order
 Route::get('/order/{order}', [App\Http\Controllers\OrderController::class, 'index']);
+//edit state of order by admin
+Route::get('/order/{order}/edit', [App\Http\Controllers\OrderController::class, 'edit'])->name('order.edit')->middleware('is_admin');
+Route::patch('/order/{order}', [App\Http\Controllers\OrderController::class, 'update'])->middleware('is_admin');
+//delete order by admin
+Route::delete('/order/{order}/delete', [App\Http\Controllers\OrderController::class, 'destroy'])->name('order.destroy')->middleware('is_admin');

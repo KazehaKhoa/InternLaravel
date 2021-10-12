@@ -15,44 +15,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-        DB::table('users')->insert([
-            [
-                'name' => 'test1',
-                'email' => 'test1@test.com',
-                'isAdmin' => 0,
-                'password' => bcrypt('123456'),
-                'created_at' => now(),
-                'updated_at' => now(),
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'test2',
-                'email' => 'test2@test.com',
-                'isAdmin' => 0,
-                'password' => bcrypt('123456'),
-                'created_at' => now(),
-                'updated_at' => now(),
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'test3',
-                'email' => 'test3@test.com',
-                'isAdmin' => 0,
-                'password' => bcrypt('123456'),
-                'created_at' => now(),
-                'updated_at' => now(),
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'test4',
-                'email' => 'test4@test.com',
-                'isAdmin' => 1,
-                'password' => bcrypt('123456'),
-                'created_at' => now(),
-                'updated_at' => now(),
-                'email_verified_at' => now(),
-            ],
-        ]);
+        \App\Models\User::factory()->count(50)->create();
+
+        \App\Models\Customer::factory()->count(50)->create();
 
         DB::table('orders')->insert([
             [

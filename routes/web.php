@@ -20,6 +20,23 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//Users
+Route::get('/user', [App\Http\Controllers\UserController::class, 'index']);
+Route::get('/user/search', [App\Http\Controllers\UserController::class, 'search'])->name('user.search');
+Route::delete('/user/{user}/delete', [App\Http\Controllers\UserController::class, 'destroy'])->name('user.destroy');
+Route::post('/user',  [App\Http\Controllers\UserController::class, 'store'])->name('user.store');
+Route::patch('/user/{user}', [App\Http\Controllers\UserController::class, 'update']);
+Route::patch('/user/{user}/lock', [App\Http\Controllers\UserController::class, 'lock']);
+
+//Customers
+Route::get('/customer', [App\Http\Controllers\CustomerController::class, 'index']);
+Route::get('/customer/search', [App\Http\Controllers\CustomerController::class, 'search'])->name('customer.search');
+Route::post('/customer',  [App\Http\Controllers\CustomerController::class, 'store'])->name('customer.store');
+Route::patch('/customer/{customer}', [App\Http\Controllers\CustomerController::class, 'update']);
+//add customer form csv file
+//list customer to csv file
+
 //show all order for admin
 Route::get('/admin/order', [App\Http\Controllers\OrderManagementController::class, 'showAdmin'])->name('admin.orders')->middleware('is_admin');
 //add order by admin

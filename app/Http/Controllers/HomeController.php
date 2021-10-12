@@ -29,7 +29,7 @@ class HomeController extends Controller
     public function index()
     {
         
-        return Redirect::to('/admin/order');
+        return Redirect::to('/user');
     }
 
 }

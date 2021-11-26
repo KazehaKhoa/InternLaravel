@@ -35,7 +35,17 @@ Route::get('/customer/search', [App\Http\Controllers\CustomerController::class, 
 Route::post('/customer',  [App\Http\Controllers\CustomerController::class, 'store'])->name('customer.store');
 Route::patch('/customer/{customer}', [App\Http\Controllers\CustomerController::class, 'update']);
 //add customer form csv file
-//list customer to csv file
+Route::get('/customer/exportExcel', [App\Http\Controllers\CustomerController::class, 'exportToExcel']);
+
+//Products
+Route::get('/product', [App\Http\Controllers\ProductController::class, 'index']);
+Route::get('/product/search', [App\Http\Controllers\ProductController::class, 'search'])->name('product.search');
+Route::delete('/product/{product}/delete', [App\Http\Controllers\ProductController::class, 'destroy']);
+Route::get('/product/create', [App\Http\Controllers\ProductController::class, 'create']);
+Route::post('/product', [App\Http\Controllers\ProductController::class, 'store']);
+Route::get('/product/{product}/edit', [App\Http\Controllers\ProductController::class, 'edit']);
+Route::patch('/product/{product}', [App\Http\Controllers\ProductController::class, 'update']);
+
 
 //show all order for admin
 Route::get('/admin/order', [App\Http\Controllers\OrderManagementController::class, 'showAdmin'])->name('admin.orders')->middleware('is_admin');

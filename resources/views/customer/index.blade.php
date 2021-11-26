@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<h2>Users</h2>
+<h2>Khách hàng</h2>
 <hr>
 <div class="container">
     <form id='searchForm'>
@@ -23,63 +23,31 @@
                 <td><input type="text" id="searchAddress" name="searchAddress"></td>
         </tr>
         <tr>
-            <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCustomerModal">
+            <td><button type="button" class="btn btn-primary add-btn">
                 Thêm Mới
               </button></td>
             <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
                 Import CSV
               </button></td>
-            <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+            <td><a type="button" class="btn btn-primary" href="/customer/exportExcel">
                 Export CSV
-              </button></td>
+            </a></td>
             <td><input type="submit" value="Tìm kiếm">
                 <input type="reset" value="Xóa tìm">
             </td>
         </tr>
+        
     </table>
     </form>
 
-    <div id="top-pagination"class="d-flex justify-content-center">
-        {!! $customers->links() !!}
-    </div>
-
-    <table class="mt-5 table table-light" id="userTable">
-        <tr class="bg-danger text-light">
-            <th scope="col">#</th>
-            <th scope="col">Họ Tên</th>
-            <th scope="col">Email</th>
-            <th scope="col">Địa chỉ</th>
-            <th scope="col">Điện thoại</th>
-            <th></th>
-        </tr>
-        <tbody id="listUser">
-            @foreach ($customers as $customer)
-                <tr class="font-weight-bold">
-                    <th class='cusId' scope="row">{{ $customer->id }}</th>
-                    <td class="cusName">{{  $customer->customer_name }}</td>
-                    <td class="cusMail">{{  $customer->email }}</td>
-                    <td class="cusNum">{{  $customer->tel_num }}</td>
-                    <td class="cusAddress">{{  $customer->address }}</td>
-                    <td>
-                        <button type="button" class="btn btn-primary edit-btn" data-id="{{ $customer->id }}"><i class="bi bi-pen"></i></button>        
-                    </td>
-                </tr>
-
-                <form id="editCustomer{{ $customer->id }}" class="edit-customer-form">
-                    @csrf
-                    <meta name="csrf-token" content="{{  csrf_token() }}">
-                </form>
-            @endforeach
-        </tbody>
-    </table>
-    <br>
-    <div id="bot-pagination" class="d-flex justify-content-center">
-        {!! $customers->links() !!}
+    <div id="pagination">
+        @include('customer.search')
+        <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
     </div>
 
     <div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <form method="POST" action="/customer">
+        <div class="modal-dialog modal-lg" role="document">
+            <form method="POST" action="/customer" id="addCustomerForm">
                 {{ csrf_field() }}
                 <div class="modal-content">
                     <div class="modal-header">
@@ -89,13 +57,44 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                      <input type="text" id="name" name="name" class="form-control" placeholder="Họ và tên người dùng">
-                      <input type="email" id="email" name="email" class="form-control" placeholder="Email">
-                      <input type="tel" id="tel_num" name="tel_num" class="form-control" placeholder="Số điện thoại">
-                      <input type="text" id="address" name="address"class="form-control" placeholder="Địa chỉ">
-                      Đang hoạt động?
-                      <input type="hidden" id="state" name="state" value="0" checked>
-                      <input type="checkbox" id="state" name="state" value="1">
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-3 col-form-label">Họ và tên</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="name" name="name" class="form-control" placeholder="Họ và tên người dùng">
+                                <span id="warning-name" class="warning"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="email" class="col-sm-3 col-form-label">Email</label>
+                            <div class="col-sm-9">
+                                <input type="email" id="email" name="email" class="form-control" placeholder="Email">
+                                <span id="warning-email" class="warning"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="tel_num" class="col-sm-3 col-form-label">Số điện thoại</label>
+                            <div class="col-sm-9">
+                                <input type="tel" id="tel_num" name="tel_num" class="form-control" placeholder="Số điện thoại">
+                                <span id="warning-tel_num" class="warning"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="address" class="col-sm-3 col-form-label">Địa chỉ</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="address" name="address"class="form-control" placeholder="Địa chỉ">
+                                <span id="warning-address" class="warning"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="state" class="col-sm-3 col-form-label">Đang hoạt động?</label>
+                            <div class="col-sm-9">
+                                <input type="checkbox" id="state" name="state">
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -106,110 +105,121 @@
         </div>
       </div>
 
-      <div class="modal fade" id="editCustomerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <form id="editUser">
-                @csrf
-                <meta name="csrf-token" content="{{  csrf_token() }}">
-                <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <input type="hidden" id="editId" name="editId">
-                      <input type="text" id="editName"  class="form-control" placeholder="Họ và tên người dùng">
-                      <input type="email" id="editEmail"  class="form-control" placeholder="Email">
-                      <input type="password" id="editPassword"  class="form-control" placeholder="Password">
-                      <input type="password" id="editPassword_confirmation" class="form-control" placeholder=" Confirm Password">
-                      <select name="editgroup" id="editGroup"  class="form-control">
-                        <option disabled selected value> -- hãy chọn nhóm -- </option>
-                        <option value="ADMIN">ADMIN</option>
-                        <option value="REVIEWER">REVIEWER</option>
-                        <option value="EDITOR">EDITOR</option>
-                      </select><br>
-                      Lock?
-                      <input type="checkbox" id="editState" name="editState">
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-primary" id="saveEditBtn">Save changes</button>
-                    </div>
-                  </div>
-            </form>
-        </div>
-      </div>
-
     <script type="text/javascript">
     $(document).ready(function () {
-        $("#searchForm").submit(function (e) {
-            e.preventDefault();
-            var name = $("#searchName").val();
-            var email = $("#searchEmail").val();
-            var group = $("#searchGroup").val();
-            var state = $("#searchState").val();
+        function fetch_data(page, name, email, state, address)
+        {
             $.ajax({
-                type: "get",
-                url: "/user/search",
-                data: {
-                    name:name,
-                    email:email,
-                    group:group,
-                    state:state
-                },
-                dataType: "json",
-                success: function (response) {
-                    if(response) {
-                        $("#listUser").html(response);
-                        alert('haaah, kimochi yokatta');
-
-                    }
-                    else {
-                        alert('i dont feel so good');
-                    }
+            url:"/customer/search?page="+page,
+            type: 'get',
+            data: {
+                name:name,
+                email:email,
+                state:state,
+                address:address
+            },
+            success:function(data)
+                {
+                    $('#pagination').html('');
+                    $('#pagination').html(data);
                 }
+            })
+        }
+
+        $(document).on('submit', '#searchForm', function (e) {
+            e.preventDefault();
+            var searchName = $("#searchName").val();
+            var searchEmail = $("#searchEmail").val();
+            var searchState = $("#searchState").val();
+            var searchAddress = $("#searchAddress").val();
+            var page = $('#hidden_page').val();
+            fetch_data(page, searchName, searchEmail, searchState, searchAddress);
+        });
+
+    
+        $(document).on('click', '.pagination a', function(event){
+            event.preventDefault();
+            var page = $(this).attr('href').split('page=')[1];
+            $('#hidden_page').val(page);
+            
+            var searchName = $("#searchName").val();
+            var searchEmail = $("#searchEmail").val();
+            var searchState = $("#searchState").val();
+            var searchAddress = $("#searchAddress").val();
+            $('li').removeClass('active');
+            $(this).parent().addClass('active');
+            fetch_data(page, searchName, searchEmail, searchState, searchAddress);
+        });
+
+        $(document).on('click', '.add-btn', function() {
+            $('#addCustomerModal').modal('show');
+
+            $('#addCustomerForm').on('submit', function(e) {
+                e.preventDefault();
+                var name = $("#name").val();
+                var email = $("#email").val();
+                var tel_num = $("#tel_num").val();
+                var address = $("#address").val();
+                var state;
+                if ($('#state').is(':checked')) {
+                    state = 1;
+                }
+                else {
+                    state = 0;
+                };
+                var token = $("meta[name='csrf-token']").attr("content");
+                $.ajax({
+                    type: "POST",
+                    url: "customer",
+                    data: {
+                        "_token": token,
+                        name:name,
+                        email:email,
+                        tel_num:tel_num,
+                        address:address,
+                        state:state
+                    },
+                    success: function (result) {
+                        if(result.errors) {
+                            $(".warning").html("");
+                            $.each( result.errors, function( key, value ) {
+                                $("#warning-" + key).html("<a class='text-danger font-weight-bold'>" + value + "</a>");
+                            });
+                        }
+                        else{
+                            console.log(result.success);
+                            location.reload();
+                        }
+                        
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
             });
         });
 
-        $('.edit-btn').on('click', function() {
+        $(document).on('click', '.edit-btn', function() {
             $tr = $(this).closest('tr');
             var data = $tr.children("td").map(function() {
                 return $(this).text();
             }).get();
-            alert(data[0] + data[1] + data[2] + data[3]);
 
-            var id = $tr.children("th").map(function() {
-                return $(this).text();
-            }).get();
-            alert(id[0]);
+            var id = $(this).data("id");
 
-            $(this).parent().parent().children().eq(1).html($('<input>',{type:'text', value: data[0], form: 'editCustomer' + id[0], id: "editName"+id[0]}));
-            $(this).parent().parent().children().eq(2).html($('<input>',{type:'text', value: data[1], form: 'editCustomer' + id[0], id: "editEmail"+id[0]}));
-            $(this).parent().parent().children().eq(3).html($('<input>',{type:'text', value: data[2], form: 'editCustomer' + id[0], id: "editNum"+id[0]}));
-            $(this).parent().parent().children().eq(4).html($('<input>',{type:'text', value: data[3], form: 'editCustomer' + id[0], id: "editAddress"+id[0]}));
-            
-            $(this).replaceWith("<button type='submit' class='submit-edit-btn' form='editCustomer"+id[0]+"'>Save</button>");
+            $(this).parent().parent().children(".name").html($('<input>',{type:'text', value: data[0], form: 'editCustomer' + id, id: "editName"+id}));
+            $(this).parent().parent().children(".email").html($('<input>',{type:'email', value: data[1], form: 'editCustomer' + id, id: "editEmail"+id}));
+            $(this).parent().parent().children(".address").html($('<input>',{type:'text', value: data[2], form: 'editCustomer' + id, id: "editAddress"+id}));
+            $(this).parent().parent().children(".telNum").html($('<input>',{type:'tel', value: data[3], form: 'editCustomer' + id, id: "editNum"+id}));
+            $(this).replaceWith("<button type='submit' class='submit-edit-btn btn btn-success' form='editCustomer"+id+"'><i class='bi bi-save'></i></button>");
 
-            alert("Fuiyo");
-            
-            
-
-
-            $('.edit-customer-form').on('submit', function(e) {
-                e.preventDefault;
-                alert("Still OK");
-                var name = $("#editName"+id[0]).val();
-                alert(name);
-                var email = $("#editEmail"+id[0]).val();
-                alert(email);
-                var telNum = $("#editNum"+id[0]).val();
-                alert(telNum);
-                var address = $("#editAddress"+id[0]).val();
-                alert(address);
+            $(document).on('submit', '.edit-customer-form', function(e) {
+                e.preventDefault();
+                var name = $("#editName"+id).val();
+                var email = $("#editEmail"+id).val();
+                var telNum = $("#editNum"+id).val();
+                var address = $("#editAddress"+id).val();
                 var token = $("meta[name='csrf-token']").attr("content");
-                alert("plz");
                 $.ajax({
                     type: "POST",
                     url: "/customer/" +id,
@@ -222,8 +232,18 @@
                         telNum:telNum,
                         address:address,
                     },
-                    success: function (response) {
-                            alert("success");
+                    success: function (result) {
+                        if(result.errors) {
+                            $(".warning").html("");
+                            $.each( result.errors, function( key, value ) {
+                                $("#warning-" + key +"-"+ id).html("<a class='text-danger font-weight-bold'>" + value + "</a>");
+                            });
+                        }
+                        else{
+                            console.log(result.success);
+                            fetch_data(1, name, email);
+                        }
+                        
                     },
                     error: function(error) {
                         console.log(error);

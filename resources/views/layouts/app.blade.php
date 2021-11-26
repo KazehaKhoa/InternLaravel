@@ -27,7 +27,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light shadow-sm">
             <div class="container">
                 <a class="navbar-brand d-flex" href="{{ url('/') }}">
                     <div><img src="/svg/logo.jpg" style="height: 30px; border-right: 1px solid #333;" class="pr-3"></div>
@@ -37,17 +37,17 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="navManagement">
+                <div class="collapse navbar-collapse" id="navManagement" style="background-color: rgb(170, 170, 170)">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Sản phẩm</a>
+                        <li class="nav-item {{ Request::is('product') ? 'active' : '' }}">
+                            <a class="nav-link" href="/product">Sản phẩm</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Khách hàng</a>
+                        <li class="nav-item {{ Request::is('customer') ? 'active' : '' }}">
+                            <a class="nav-link" href="/customer">Khách hàng</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Users</a>
+                        <li class="nav-item {{ Request::is('user') ? 'active' : '' }}">
+                            <a class="nav-link" href="/user">Users</a>
                         </li>
                     </ul>
 

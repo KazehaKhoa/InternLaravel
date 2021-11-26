@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CustomerExport;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use DB;
@@ -9,6 +10,7 @@ use Illuminate\Pagination\CursorPaginator;
 use Redirect;
 use Validator;
 use Hash;
+use Excel;
 
 class CustomerController extends Controller
 {
@@ -17,6 +19,11 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     public function index()
     {
         //
@@ -44,12 +51,16 @@ class CustomerController extends Controller
     {
         //
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'tel_num' => 'required',
-            'address' => 'required',
-            'state' => 'required'
+            'name' => 'required|min:5',
+            'email' => 'required|email|unique:customers,email',
+            'tel_num' => 'required|regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
+            'address' => 'required'
         ]);
+
+        if ($validator->fails())
+        {
+            return response()->json(['errors'=>$validator->errors()]);
+        }
 
         \App\Models\Customer::create([
             'customer_name' => $request->get('name'),
@@ -59,7 +70,7 @@ class CustomerController extends Controller
             'is_active' => $request->get('state'),
         ]);
 
-        return Redirect('/customer');
+        return response()->json(['success'=>'Update record.']);
     }
 
     /**
@@ -95,11 +106,16 @@ class CustomerController extends Controller
     {
         //
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'telNum' => 'required',
+            'name' => 'required|min:5',
+            'email' => 'required|email|unique:customers,email,'.$customer->id,
+            'telNum' => 'required|regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
             'address' => 'required'
         ]);
+
+        if ($validator->fails())
+        {
+            return response()->json(['errors'=>$validator->errors()]);
+        }
 
         DB::table('customers')->where('id', $customer->id)->update([
             'customer_name' => $request->get('name'),
@@ -108,7 +124,7 @@ class CustomerController extends Controller
             'address' => $request->get('address'),
         ]);
 
-        return Redirect('/customer');
+        return response()->json(['success'=>'Update record.']);
     }
 
     /**
@@ -122,9 +138,22 @@ class CustomerController extends Controller
         //
     }
 
-    public function search(Request $request) {
-
+    public function search(Request $request)
+    {
+        $customers = DB::table('customers')->select('*')->where([
+            ['customer_name', 'LIKE', '%'.$request->get('name').'%'],
+            ['email', 'LIKE', '%'.$request->get('email').'%'],
+            ['is_active',  'LIKE', '%'.$request->get('state').'%'],
+            ['address',  'LIKE', '%'.$request->get('address').'%'],
+            ])->paginate(20);
+        if ($request->ajax()) {
+            return view('customer.search', compact('customers'))->render();
+        }
+        return view('customer.index', compact('customers'));
     }
 
+    public function exportToExcel() {
+        return Excel::download(new CustomerExport, 'customers.xlsx');
+    }
 
 }

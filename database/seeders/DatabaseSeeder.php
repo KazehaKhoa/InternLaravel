@@ -45,23 +45,22 @@ class DatabaseSeeder extends Seeder
                 'order_date' => now(),
             ],
         ]);
-
-        DB::table('products')->insert([
+        DB::table('shops')->insert([
             [
-                'name' => 'BMW R18',
-                'price' => 5000,
-                'productId' => 'R18150',
-                'state' => 'AVAILABLE',
-                'stock' => 12
+                'shop_name' => 'Global',
+                'seller_id' => 5
             ],
             [
-                'name' => 'KAWASAKI 1000',
-                'price' => 8000,
-                'productId' => 'K1000',
-                'state' => 'OUT OF STOCK',
-                'stock' => 0
+                'shop_name' => 'China',
+                'seller_id' => 35
+            ],
+            [
+                'shop_name' => 'Japan',
+                'seller_id' => 26
             ],
         ]);
+
+        \App\Models\Product::factory()->count(50)->create();
 
         DB::table('order__products')->insert([
             [
